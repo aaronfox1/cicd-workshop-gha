@@ -19,7 +19,7 @@ jobs:
         node-version: 16.16.0
         cache: 'npm'
     - run: npm install
-    - run: npm test-ci
+    - run: npm run test-ci
     - name: Copy tests results for storing
       run: |
         mkdir test-results
