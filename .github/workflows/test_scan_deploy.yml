@@ -65,7 +65,8 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}-gha:0.1.${{ vars.GITHUB_RUN_NUMBER }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}-gha:0.1.${{ vars.GITHUB_RUN_ID }}
+
 
   # build_and_test_cimg:
   #   runs-on: ubuntu-latest
