@@ -3,7 +3,7 @@ version: 2.1
 orbs:
   node: circleci/node@5.1.0
   docker: circleci/docker@2.2.0
-  snyk: snyk/snyk@1.4.0
+  snyk: snyk/snyk@1.5.0
   terraform: circleci/terraform@3.2.0
 
 commands:
