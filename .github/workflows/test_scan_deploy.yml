@@ -65,12 +65,8 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true # Tag with version???
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}-gha:0.1.${{ vars.GITHUB_RUN_ID }}
-      - run: |
-          echo "some vars"
-          echo "${{ secrets.DOCKERHUB_USERNAME }}"
-          echo "${{ vars.GITHUB_RUN_ID }}"
-          echo "${{ github.event.repository.name }}"
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}-gha:0.1.${{ github.run_number }}
+
 
   # create_do_k8s_cluster:
   #   runs-on: ubuntu-latest
