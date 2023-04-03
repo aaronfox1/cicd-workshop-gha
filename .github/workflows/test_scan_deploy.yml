@@ -1,0 +1,72 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Test Scan Deploy
+
+on: push
+
+jobs:
+  build_and_test:
+
+    runs-on: ubuntu-latest
+    container: node:16.16
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js 16.16.0
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16.16.0
+        cache: 'npm'
+    - run: npm install
+    - run: npm run test-ci
+    - name: Copy tests results for storing
+      run: |
+        mkdir test-results
+        cp test-results.xml test-results/ 
+    # Potential issue running these if tests fail - need to check
+    - name: Store test results
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results
+        path: |
+          test-results
+
+  dependency_vulnerability_scan:
+    runs-on: ubuntu-latest
+    container: node:16.16
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
+
+
+  # build_and_test_cimg:
+  #   runs-on: ubuntu-latest
+  #   container: cimg/node:16.16.0
+
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: Use Node.js 16.16.0
+  #     uses: actions/setup-node@v3
+  #     with:
+  #       node-version: 16.16.0
+  #       cache: 'npm'
+  #   - run: npm install
+  #   - run: npm run test-ci
+  #   - name: Copy tests results for storing
+  #     run: |
+  #       mkdir test-results
+  #       cp test-results.xml test-results/ 
+  #   # Potential issue running these if tests fail - need to check
+  #   - name: Store test results
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: test-results
+  #       path: |
+  #         test-results
+            
