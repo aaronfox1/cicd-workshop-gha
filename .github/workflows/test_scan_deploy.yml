@@ -64,10 +64,18 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v4
         with:
-          push: true
+          push: true # Tag with version???
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}-gha:0.1.${{ vars.GITHUB_RUN_ID }}
+      - run: |
+          echo "some vars"
+          echo "${{ secrets.DOCKERHUB_USERNAME }}"
+          echo "${{ vars.GITHUB_RUN_ID }}"
+          echo "${{ github.event.repository.name }}"
 
-
+  # create_do_k8s_cluster:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - 
   # build_and_test_cimg:
   #   runs-on: ubuntu-latest
   #   container: cimg/node:16.16.0
