@@ -78,7 +78,7 @@ jobs:
           command: |
             echo -en "credentials \"app.terraform.io\" {token = \"$TF_CLOUD_TOKEN\"}" > $HOME/.terraformrc
             # Create backend file for terraform init with unique TF Cloud org
-            echo -en "organization = \"${TF_CLOUD_ORGANIZATION}\"\nworkspaces{name =\"${TF_CLOUD_WORKSPACE}\"}" > ./terraform/digital_ocean/do_create_k8s/remote_backend_config
+            echo -en "organization = \"${TF_CLOUD_ORG_NAME}\"\nworkspaces{name =\"${TF_CLOUD_WORKSPACE}\"}" > ./terraform/digital_ocean/do_create_k8s/remote_backend_config
       - terraform/install:
           terraform_version: "1.2.0"
           arch: "amd64"
