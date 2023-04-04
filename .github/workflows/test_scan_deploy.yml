@@ -142,9 +142,12 @@ jobs:
 
           # Save the Load Balancer Public IP Address
           export ENDPOINT="$(terraform -chdir=./terraform/digital_ocean/do_k8s_deploy_app output lb_public_ip)"
+          echo "endpoint export"
+          echo $ENDPOINT
           mkdir -p /tmp/do_k8s/
           echo 'export ENDPOINT='${ENDPOINT} > /tmp/do_k8s/dok8s-endpoint
-          
+          cat /tmp/do_k8s/dok8s-endpoint
+
       - uses: actions/upload-artifact@v3
         with: 
           name: dok8s-endpoint
