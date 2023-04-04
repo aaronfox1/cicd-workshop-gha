@@ -76,6 +76,7 @@ jobs:
       - build_docker_image
 
     steps:
+      - uses: actions/checkout@v3
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
         with:
@@ -88,10 +89,9 @@ jobs:
           echo "outputs for debug"
           cat $HOME/.terraformrc
           pwd
-          ls -ali
-          ls .terraform
-
-          touch .terraform/digital_ocean/do_create_k8s/remote_backend_config
+          ls 
+          ls terraform
+          
           echo -en "organization = \"${{vars.TF_CLOUD_ORGANIZATION}}\"\nworkspaces{name =\"${{vars.TF_CLOUD_WORKSPACE}}\"}" > ./terraform/digital_ocean/do_create_k8s/remote_backend_config
       - uses: hashicorp/setup-terraform@v2
         with:
