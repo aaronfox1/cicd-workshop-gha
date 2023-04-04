@@ -123,6 +123,7 @@ jobs:
         with:
           terraform_version: 1.2.0
       - name: Deploy Application to K8s on DigitalOcean
+        id: deploy-to-do-k8s
         run: |
           export CLUSTER_NAME=${{github.repository_owner}}-${{ github.event.repository.name }}-gha
           export TAG=0.1.${{ github.run_number }}
@@ -141,12 +142,28 @@ jobs:
             -var docker_image=$DOCKER_IMAGE
 
           # Save the Load Balancer Public IP Address
-          export ENDPOINT="$(terraform -chdir=./terraform/digital_ocean/do_k8s_deploy_app output lb_public_ip)"
+          ENDPOINT="$(terraform -chdir=./terraform/digital_ocean/do_k8s_deploy_app output lb_public_ip)"
           echo "endpoint export"
           echo $ENDPOINT
           mkdir -p /tmp/do_k8s/
           echo 'export ENDPOINT='${ENDPOINT} > /tmp/do_k8s/dok8s-endpoint
           cat /tmp/do_k8s/dok8s-endpoint
+          
+
+          # steps:
+          #   - name: Set the value in bash
+          #     id: step_one
+          #     run: |
+          #       EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          #       echo "JSON_RESPONSE<<$EOF" >> $GITHUB_ENV
+          #       curl https://example.com >> $GITHUB_ENV
+          #       echo "$EOF" >> $GITHUB_ENV
+
+        #   - name: Set color
+        #   id: random-color-generator
+        #   run: echo "SELECTED_COLOR=green" >> $GITHUB_OUTPUT
+        # - name: Get color
+        #   run: echo "The selected color is ${{ steps.random-color-generator.outputs.SELECTED_COLOR }}"
 
       - uses: actions/upload-artifact@v3
         with: 
