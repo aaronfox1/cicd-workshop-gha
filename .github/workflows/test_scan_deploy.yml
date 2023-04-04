@@ -68,10 +68,44 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}-gha:0.1.${{ github.run_number }}
 
 
-  # create_do_k8s_cluster:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - 
+  create_do_k8s_cluster:
+    runs-on: ubuntu-latest
+    needs: 
+      - build_and_test
+      - dependency_vulnerability_scan 
+      - build_docker_image
+
+    steps:
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      - name: Create .terraformrc file locally
+        run: |
+          name: Create .terraformrc file locally
+          command: |
+            echo -en "credentials \"app.terraform.io\" {token = \"${{secrets.TF_CLOUD_TOKEN}}\"}" > $HOME/.terraformrc
+            # Create backend file for terraform init with unique TF Cloud org
+            echo -en "organization = \"${{vars.TF_CLOUD_ORGANIZATION}}\"\nworkspaces{name =\"${{vars.TF_CLOUD_WORKSPACE}}\"}" > ./terraform/digital_ocean/do_create_k8s/remote_backend_config
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.2.0
+      - name: Create K8S cluster on Digital Ocean
+        run: |
+          export CLUSTER_NAME=${{github.repository_owner}}-${{ github.event.repository.name }}-gha
+          export DO_K8S_SLUG_VER="$(doctl kubernetes options versions \
+            -o json -t ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} | jq -r '.[0] | .slug')"
+          # Initialize terraform with unique org name
+          terraform -chdir=terraform/digital_ocean/do_create_k8s init \
+            -backend-config=remote_backend_config
+          # Execute k8s creation
+          terraform -chdir=terraform/digital_ocean/do_create_k8s apply -auto-approve \
+            -var do_token=${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} \
+            -var cluster_name=$CLUSTER_NAME \
+            -var do_k8s_slug_ver=$DO_K8S_SLUG_VER
+
+
+
   # build_and_test_cimg:
   #   runs-on: ubuntu-latest
   #   container: cimg/node:16.16.0
