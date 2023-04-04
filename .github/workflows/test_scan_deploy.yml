@@ -85,13 +85,6 @@ jobs:
         run: |
           echo -en "credentials \"app.terraform.io\" {token = \"${{secrets.TF_CLOUD_TOKEN}}\"}" > $HOME/.terraformrc
           # Create backend file for terraform init with unique TF Cloud org
-          
-          echo "outputs for debug"
-          cat $HOME/.terraformrc
-          pwd
-          ls 
-          ls terraform
-
           echo -en "organization = \"${{vars.TF_CLOUD_ORGANIZATION}}\"\nworkspaces{name =\"${{vars.TF_CLOUD_WORKSPACE}}\"}" > ./terraform/digital_ocean/do_create_k8s/remote_backend_config
       - uses: hashicorp/setup-terraform@v2
         with:
@@ -125,14 +118,7 @@ jobs:
         run: |
           echo -en "credentials \"app.terraform.io\" {token = \"${{secrets.TF_CLOUD_TOKEN}}\"}" > $HOME/.terraformrc
           # Create backend file for terraform init with unique TF Cloud org
-          
-          echo "outputs for debug"
-          cat $HOME/.terraformrc
-          pwd
-          ls 
-          ls terraform
-
-          echo -en "organization = \"${{vars.TF_CLOUD_ORGANIZATION}}\"\nworkspaces{name =\"${{vars.TF_CLOUD_WORKSPACE}}-deployment\"}" > ./terraform/digital_ocean/do_create_k8s/remote_backend_config
+          echo -en "organization = \"${{vars.TF_CLOUD_ORGANIZATION}}\"\nworkspaces{name =\"${{vars.TF_CLOUD_WORKSPACE}}-deployment\"}" > ./terraform/digital_ocean/do_k8s_deploy_app/remote_backend_config
       - uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.2.0
@@ -179,7 +165,10 @@ jobs:
           source /tmp/do_k8s/dok8s-endpoint
           ./test/smoke_test $ENDPOIN
 
-      # Artifact
+      
+      
+      
+          # Artifact
   
 
   # build_and_test_cimg:
