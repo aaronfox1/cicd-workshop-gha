@@ -149,7 +149,8 @@ jobs:
           # echo $GITHUB_ENV
 
           # TODO: saving this is broken, skipping test for now
-          ENDPOINT=$(terraform -chdir=./terraform/digital_ocean/do_k8s_deploy_app output lb_public_ip)
+          { terraform -chdir=./terraform/digital_ocean/do_k8s_deploy_app output lb_public_ip)} >> output_endpoint.txt
+          cat output_endpoint.txt
           
           echo "endpoint export"
           echo $ENDPOINT
