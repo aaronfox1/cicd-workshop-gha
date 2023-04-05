@@ -3,7 +3,11 @@
 
 name: Test Scan Deploy
 
-on: push
+on: 
+  push:
+    branches-ignore: 
+      - main
+
 
 jobs:
   build_and_test:
