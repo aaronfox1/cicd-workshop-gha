@@ -142,15 +142,18 @@ jobs:
             -var cluster_name=$CLUSTER_NAME \
             -var docker_image=$DOCKER_IMAGE
 
+          echo "BEGIN EXPERIMENT WITH GITHUB ENV"
           # Save the Load Balancer Public IP Address
           terraform -chdir=./terraform/digital_ocean/do_k8s_deploy_app output lb_public_ip
           # terraform -chdir=./terraform/digital_ocean/do_k8s_deploy_app output lb_public_ip >> $GITHUB_ENV
           # echo $GITHUB_ENV
 
           # TODO: saving this is broken, skipping test for now
-          # ENDPOINT="$(terraform -chdir=./terraform/digital_ocean/do_k8s_deploy_app output lb_public_ip)"
-          # echo "endpoint export"
-          # echo $ENDPOINT
+          ENDPOINT=$(terraform -chdir=./terraform/digital_ocean/do_k8s_deploy_app output lb_public_ip)
+          
+          echo "endpoint export"
+          echo $ENDPOINT
+
           # mkdir -p /tmp/do_k8s/
           # echo 'export ENDPOINT='${ENDPOINT} > /tmp/do_k8s/dok8s-endpoint
           # cat /tmp/do_k8s/dok8s-endpoint
