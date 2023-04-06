@@ -109,7 +109,7 @@ jobs:
     needs: 
       - create_do_k8s_cluster
     outputs:
-      deploy_endpoint: ${{steps.deploy.outputs.ENDPOINT}}
+      deploy_endpoint: ${{steps.deploy.outputs.lb_public_ip}}
     steps:
       - uses: actions/checkout@v3
       - name: Install doctl
@@ -143,18 +143,20 @@ jobs:
             -var cluster_name=$CLUSTER_NAME \
             -var docker_image=$DOCKER_IMAGE
 
-          echo "BEGIN EXPERIMENT WITH GITHUB ENV"
-          # Save the Load Balancer Public IP Address
-          terraform -chdir=./terraform/digital_ocean/do_k8s_deploy_app output lb_public_ip
-          # terraform -chdir=./terraform/digital_ocean/do_k8s_deploy_app output lb_public_ip >> $GITHUB_ENV
-          # echo $GITHUB_ENV
+      # - name: Output
 
-          # TODO: saving this is broken, skipping test for now
-          ENDPOINT=::output $(terraform -chdir=./terraform/digital_ocean/do_k8s_deploy_app output lb_public_ip)
-          echo "ENDPOINT={$ENDPOINT}" >> $GITHUB_OUTPUT
+      #     echo "BEGIN EXPERIMENT WITH GITHUB ENV"
+      #     # Save the Load Balancer Public IP Address
+      #     terraform -chdir=./terraform/digital_ocean/do_k8s_deploy_app output lb_public_ip
+      #     # terraform -chdir=./terraform/digital_ocean/do_k8s_deploy_app output lb_public_ip >> $GITHUB_ENV
+      #     # echo $GITHUB_ENV
 
-          echo $GITHUB_OUTPUT
-          echo $ENDPOINT
+      #     # TODO: saving this is broken, skipping test for now
+      #     ENDPOINT=::output $(terraform -chdir=./terraform/digital_ocean/do_k8s_deploy_app output lb_public_ip)
+      #     echo "ENDPOINT={$ENDPOINT}" >> $GITHUB_OUTPUT
+
+      #     echo $GITHUB_OUTPUT
+      #     echo $ENDPOINT
           
           # echo "endpoint export"
           # echo $ENDPOINT
@@ -200,7 +202,7 @@ jobs:
           # ./test/smoke_test $ENDPOINT
           
           echo "not used at the mo"
-          echo ${{ needs.deploy_to_k8s.outputs.deploy_endpoint }}
+          echo ${{ needs.deploy_to_k8s.outputs.deploy_endpoint}}
 
   destroy_k8s_cluster:
     runs-on: ubuntu-latest
