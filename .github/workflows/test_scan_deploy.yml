@@ -150,7 +150,7 @@ jobs:
           # echo $GITHUB_ENV
 
           # TODO: saving this is broken, skipping test for now
-          ENDPOINT=$(terraform -chdir=./terraform/digital_ocean/do_k8s_deploy_app output lb_public_ip)
+          ENDPOINT=::output $(terraform -chdir=./terraform/digital_ocean/do_k8s_deploy_app output lb_public_ip)
           echo "ENDPOINT={$ENDPOINT}" >> $GITHUB_OUTPUT
 
           echo $GITHUB_OUTPUT
