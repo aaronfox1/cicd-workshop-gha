@@ -109,7 +109,7 @@ jobs:
     needs: 
       - create_do_k8s_cluster
     outputs:
-      deploy_endpoint: ${{ steps.deploy-output.outputs.lb_public_ip }}
+      deploy_endpoint: ${{ steps.deploy-output.outputs.ENDPOINT }}
 
     steps:
       - uses: actions/checkout@v3
