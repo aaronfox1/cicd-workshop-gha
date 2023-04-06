@@ -212,10 +212,6 @@ jobs:
 
 workflows:
   test_scan_deploy:
-      filters:
-        branches:
-         ignore: 
-          - main
       jobs:
         - build_and_test
         - dependency_vulnerability_scan:
