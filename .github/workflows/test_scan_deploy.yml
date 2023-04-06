@@ -148,52 +148,6 @@ jobs:
         run: |
           ENDPOINT=$(terraform-bin -chdir=./terraform/digital_ocean/do_k8s_deploy_app output lb_public_ip)
           echo "ENDPOINT=$ENDPOINT" >> $GITHUB_OUTPUT
-      # - run: echo ${{ steps.deploy.outputs.stdout }}
-      # - run: echo ${{ steps.deploy.outputs.stderr }}
-      # - run: echo ${{ steps.deploy.outputs.exitcode }}
-
-      # - name: Output
-
-      #     echo "BEGIN EXPERIMENT WITH GITHUB ENV"
-      #     # Save the Load Balancer Public IP Address
-      #     terraform -chdir=./terraform/digital_ocean/do_k8s_deploy_app output lb_public_ip
-      #     # terraform -chdir=./terraform/digital_ocean/do_k8s_deploy_app output lb_public_ip >> $GITHUB_ENV
-      #     # echo $GITHUB_ENV
-
-      #     # TODO: saving this is broken, skipping test for now
-      #     ENDPOINT=::output $(terraform -chdir=./terraform/digital_ocean/do_k8s_deploy_app output lb_public_ip)
-      #     echo "ENDPOINT={$ENDPOINT}" >> $GITHUB_OUTPUT
-
-      #     echo $GITHUB_OUTPUT
-      #     echo $ENDPOINT
-          
-          # echo "endpoint export"
-          # echo $ENDPOINT
-
-          # mkdir -p /tmp/do_k8s/
-          # echo 'export ENDPOINT='${ENDPOINT} > /tmp/do_k8s/dok8s-endpoint
-          # cat /tmp/do_k8s/dok8s-endpoint
-          
-
-          # steps:
-          #   - name: Set the value in bash
-          #     id: step_one
-          #     run: |
-          #       EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-          #       echo "JSON_RESPONSE<<$EOF" >> $GITHUB_ENV
-          #       curl https://example.com >> $GITHUB_ENV
-          #       echo "$EOF" >> $GITHUB_ENV
-
-        #   - name: Set color
-        #   id: random-color-generator
-        #   run: echo "SELECTED_COLOR=green" >> $GITHUB_OUTPUT
-        # - name: Get color
-        #   run: echo "The selected color is ${{ steps.random-color-generator.outputs.SELECTED_COLOR }}"
-
-      # - uses: actions/upload-artifact@v3
-      #   with: 
-      #     name: dok8s-endpoint
-      #     path: /tmp/do_k8s/dok8s-endpoint
   
   smoketest_k8s_deployment:
     runs-on: ubuntu-latest
@@ -201,19 +155,11 @@ jobs:
       - deploy_to_k8s
     steps:
       - uses: actions/checkout@v3
-      # - uses: actions/download-artifact@v3
-      #   with: 
-      #     name: dok8s-endpoint
-      #     path: /tmp/do_k8s/
       - name: Smoke Test K8s App Deployment
         run: |
           # source /tmp/do_k8s/dok8s-endpoint
           ./test/smoke_test ${{needs.deploy_to_k8s.outputs.deploy_endpoint}}
           
-          # echo "try show deploy endpoint"
-          # echo $DEPLOY_ENDPOINT
-          # echo ${{ needs.deploy_to_k8s.outputs.deploy_endpoint}}
-
   destroy_k8s_cluster:
     runs-on: ubuntu-latest
     # approval required - tied to environment in gh
