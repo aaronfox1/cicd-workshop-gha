@@ -86,6 +86,7 @@ jobs:
       - run:
           name: Create K8s Cluster on DigitalOcean
           command: |
+            doctl auth init -t $DIGITAL_OCEAN_TOKEN
             export CLUSTER_NAME=${CIRCLE_PROJECT_USERNAME}-${CIRCLE_PROJECT_REPONAME}-cci
             export DO_K8S_SLUG_VER="$(doctl kubernetes options versions \ 
               -o json -t $DIGITAL_OCEAN_TOKEN | jq -r '.[0] | .slug')"
