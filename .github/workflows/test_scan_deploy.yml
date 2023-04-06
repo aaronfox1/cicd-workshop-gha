@@ -143,6 +143,9 @@ jobs:
             -var do_token=${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} \
             -var cluster_name=$CLUSTER_NAME \
             -var docker_image=$DOCKER_IMAGE
+      - run: echo ${{ steps.deploy.outputs.stdout }}
+      - run: echo ${{ steps.deploy.outputs.stderr }}
+      - run: echo ${{ steps.deploy.outputs.exitcode }}
 
       # - name: Output
 
