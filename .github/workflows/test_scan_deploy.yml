@@ -109,7 +109,8 @@ jobs:
     needs: 
       - create_do_k8s_cluster
     outputs:
-      deploy_endpoint: ${{steps.deploy.outputs.lb_public_ip}}
+      deploy_endpoint: ${{ steps.deploy.outputs.lb_public_ip }}
+
     steps:
       - uses: actions/checkout@v3
       - name: Install doctl
@@ -190,6 +191,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: 
       - deploy_to_k8s
+    env:
+      DEPLOY_ENDPOINT: ${{needs.deploy_to_k8s.outputs.deploy_endpoint}}
     steps:
       - uses: actions/checkout@v3
       # - uses: actions/download-artifact@v3
@@ -201,7 +204,8 @@ jobs:
           # source /tmp/do_k8s/dok8s-endpoint
           # ./test/smoke_test $ENDPOINT
           
-          echo "not used at the mo"
+          echo "try show deploy endpoint"
+          echo $DEPLOY_ENDPOINT
           echo ${{ needs.deploy_to_k8s.outputs.deploy_endpoint}}
 
   destroy_k8s_cluster:
