@@ -109,7 +109,7 @@ jobs:
     needs: 
       - create_do_k8s_cluster
     outputs:
-      deploy_endpoint: ${{ steps.deploy.outputs.stdout }}
+      deploy_endpoint: ${{ steps.deploy-output.outputs.lb_public_ip }}
 
     steps:
       - uses: actions/checkout@v3
@@ -143,9 +143,15 @@ jobs:
             -var do_token=${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} \
             -var cluster_name=$CLUSTER_NAME \
             -var docker_image=$DOCKER_IMAGE
-      - run: echo ${{ steps.deploy.outputs.stdout }}
-      - run: echo ${{ steps.deploy.outputs.stderr }}
-      - run: echo ${{ steps.deploy.outputs.exitcode }}
+      - name: Set endpoint output
+        id: deploy-output
+        run: |
+          ENDPOINT=$(terraform-bin -chdir=./terraform/digital_ocean/do_k8s_deploy_app output lb_public_ip)
+          echo $ENDPOINT
+          echo "ENDPOINT={$ENDPOINT}" >> $GITHUB_OUTPUT
+      # - run: echo ${{ steps.deploy.outputs.stdout }}
+      # - run: echo ${{ steps.deploy.outputs.stderr }}
+      # - run: echo ${{ steps.deploy.outputs.exitcode }}
 
       # - name: Output
 
