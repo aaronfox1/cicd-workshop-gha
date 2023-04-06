@@ -108,7 +108,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: 
       - create_do_k8s_cluster
-  
+    outputs:
+      deploy_endpoint: ${{steps.deploy.outputs.ENDPOINT}}
     steps:
       - uses: actions/checkout@v3
       - name: Install doctl
@@ -124,7 +125,7 @@ jobs:
         with:
           terraform_version: 1.2.0
       - name: Deploy Application to K8s on DigitalOcean
-        id: deploy-to-do-k8s
+        id: deploy
         run: |
           export CLUSTER_NAME=${{github.repository_owner}}-${{ github.event.repository.name }}-gha
           export TAG=0.1.${{ github.run_number }}
@@ -149,11 +150,13 @@ jobs:
           # echo $GITHUB_ENV
 
           # TODO: saving this is broken, skipping test for now
-          { terraform -chdir=./terraform/digital_ocean/do_k8s_deploy_app output lb_public_ip} >> output_endpoint.txt
-          cat output_endpoint.txt
+          ENDPOINT=$(terraform -chdir=./terraform/digital_ocean/do_k8s_deploy_app output lb_public_ip)
+          echo "ENDPOINT={ENDPOINT}" >> $GITHUB_OUTPUT
+
+          echo $GITHUB_OUTPUT
           
-          echo "endpoint export"
-          echo $ENDPOINT
+          # echo "endpoint export"
+          # echo $ENDPOINT
 
           # mkdir -p /tmp/do_k8s/
           # echo 'export ENDPOINT='${ENDPOINT} > /tmp/do_k8s/dok8s-endpoint
@@ -194,7 +197,9 @@ jobs:
         run: |
           # source /tmp/do_k8s/dok8s-endpoint
           # ./test/smoke_test $ENDPOINT
+          
           echo "not used at the mo"
+          echo ${{ needs.deploy_to_k8s.outputs.deploy_endpoint }}
 
   destroy_k8s_cluster:
     runs-on: ubuntu-latest
