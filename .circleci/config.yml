@@ -248,3 +248,5 @@ workflows:
             context:
               - CICD_WORKSHOP_DIGITAL_OCEAN
               - CICD_WORKSHOP_TERRAFORM_CLOUD
+
+# and commit this file to your remote git repository to share the goodness with others.
